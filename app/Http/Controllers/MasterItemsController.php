@@ -46,9 +46,13 @@ class MasterItemsController extends Controller
         // -----------------------------------------------------
 
         // Select kolom yang diperlukan (termasuk foto)
-        $data_search = $data_search->select('id', 'kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')
-                                   ->orderBy('id', 'desc')
-                                   ->get();
+        // $data_search = $data_search->select('id', 'kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')
+        //                            ->orderBy('id', 'desc')
+        //                            ->get();
+        $data_search = $data_search->with('categories') 
+                                ->select('id', 'kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')
+                                ->orderBy('id', 'desc')
+                                ->get();
 
         return json_encode([
             'status' => 200,

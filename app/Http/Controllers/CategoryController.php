@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CategoryController extends Controller
 {
@@ -72,5 +73,24 @@ class CategoryController extends Controller
         $cat->delete();
         
         return redirect('categories');
+    }
+
+    public function generatePdf($id)
+    {
+        // 1. Ambil data kategori beserta item-nya
+        $category = Category::with('items')->find($id);
+
+        if (!$category) {
+            return redirect('categories')->with('error', 'Data tidak ditemukan');
+        }
+
+        // 2. Siapkan data tanggal cetak
+        $tanggal_cetak = date('d F Y, H:i:s');
+
+        // 3. Load View PDF (Kita akan buat file ini di langkah selanjutnya)
+        $pdf = Pdf::loadView('categories.pdf', compact('category', 'tanggal_cetak'));
+
+        // 4. Download file PDF dengan nama unik
+        return $pdf->download('Laporan_Kategori_' . $category->kode . '.pdf');
     }
 }

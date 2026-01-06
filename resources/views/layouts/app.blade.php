@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
@@ -13,29 +12,52 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- 1. TAMBAHKAN CSS SELECT2 DI SINI --}}
+    
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     
     <style>
+        /* Styling Tambahan */
         .navbar-nav .nav-link.active {
             color: #0d6efd !important; 
             font-weight: bold;
         }
-        /* Fix tampilan Select2 agar cocok dengan Bootstrap 5 */
+        
+        /* Select2 Fix untuk Bootstrap 5 */
         .select2-container .select2-selection--single {
             height: 38px !important;
+            padding: 5px;
+            border: 1px solid #dee2e6;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+        
+        /* Select2 Multiple Styling */
+        .select2-container--default .select2-selection--multiple {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice {
             background-color: #0d6efd;
             border-color: #0d6efd;
             color: #fff;
+            border-radius: 4px;
+            padding: 2px 8px;
+            margin-top: 6px;
         }
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: #fff;
-            margin-right: 5px;
+            margin-right: 8px;
+            border-right: 1px solid rgba(255,255,255,0.3);
+            padding-right: 5px;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+            background-color: transparent;
+            color: #ffcccc;
         }
     </style>
 </head>
@@ -60,6 +82,7 @@
                             <a class="nav-link {{ request()->is('categories*') ? 'active' : '' }}" href="{{ url('categories') }}">Kategori Items</a>
                         </li>
                     </ul>
+
                     <ul class="navbar-nav ms-auto">
                         @guest
                         @if (Route::has('login'))
@@ -92,10 +115,13 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    {{-- 2. TAMBAHKAN JS SELECT2 DI SINI --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 
     @yield('js')
     

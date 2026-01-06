@@ -39,3 +39,5 @@ Route::get('/categories/form/{method}/{id?}', [CategoryController::class, 'formV
 Route::post('/categories/form/{method}/{id?}', [CategoryController::class, 'formSubmit']);
 Route::get('/categories/view/{id}', [CategoryController::class, 'singleView']);
 Route::get('/categories/delete/{id}', [CategoryController::class, 'delete']);
+// Route Download PDF
+Route::get('categories/pdf/{id}', [CategoryController::class, 'generatePdf']);

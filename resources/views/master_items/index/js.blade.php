@@ -1,7 +1,3 @@
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
 <script>
     var start_date = '';
     var end_date = '';
@@ -16,8 +12,15 @@
             searching: false,
             order: [[0, 'desc']], // Urutkan berdasarkan Kode (descending)
             columnDefs: [
-                { className: "text-center", targets: [1, 7] }, // Rata tengah untuk kolom Foto (1) dan View (7)
-                { className: "text-end", targets: [4, 5] }     // Rata kanan untuk kolom Harga
+                // Rata tengah & vertikal untuk Foto (Idx 1) dan View (Idx 8)
+                // Idx 8 karena ada tambahan kolom Kategori
+                { className: "text-center align-middle", targets: [1, 8] }, 
+                
+                // Rata vertikal tengah untuk semua
+                { className: "align-middle", targets: '_all' },             
+                
+                // Rata kanan untuk kolom Harga (Sekarang di index 5 dan 6)
+                { className: "text-end", targets: [5, 6] }                  
             ]
         });
         getData();
@@ -32,13 +35,13 @@
         $('#loading-filter').show();
         var dataTableObj = $('#table').DataTable();
         
-        // Ambil data filter
+        // Ambil data filter dari input
         var filter_kode = $('#filter-kode').val();
         var filter_nama = $('#filter-nama').val();
         var filter_harga_min = $('#filter-harga-min').val();
         var filter_harga_max = $('#filter-harga-max').val();
         
-        // Kosongkan tabel
+        // Kosongkan tabel sebelum isi ulang
         dataTableObj.clear().draw();
 
         $.ajax({
@@ -62,34 +65,46 @@
                     harga_jual = Math.round(harga_jual);
 
                     // --- 2. Logic Tampilan Foto ---
-                    var imgHtml = '<span class="text-muted small">No Image</span>';
+                    var imgHtml = '<span class="text-muted small">-</span>';
                     if (item.foto) {
-                        // Membuat elemen gambar dengan path folder uploads
-                        imgHtml = `<img src="${uploadsUrl}/${item.foto}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border:1px solid #ccc;">`;
+                        imgHtml = `<img src="${uploadsUrl}/${item.foto}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border:1px solid #dee2e6;">`;
                     }
 
-                    // --- 3. Logic Tombol View ---
+                    // --- 3. Logic Tampilan Kategori (BARU) ---
+                    var kategoriHtml = '<span class="text-muted small">-</span>';
+                    // Cek apakah ada data kategori yang terhubung
+                    if (item.categories && item.categories.length > 0) {
+                        kategoriHtml = '';
+                        // Loop setiap kategori untuk dibuatkan badge
+                        item.categories.forEach(function(cat) {
+                            kategoriHtml += `<span class="badge bg-info text-dark me-1 mb-1">${cat.nama}</span>`;
+                        });
+                    }
+                    // ------------------------------------------
+
+                    // --- 4. Logic Tombol View ---
                     var urlView = "{{url('master-items/view/')}}/" + item.kode;
                     var btnHtml = `<a href="${urlView}" class="btn btn-primary btn-sm">View</a>`;
 
-                    // --- 4. Susun Array Data (URUTAN WAJIB SAMA DENGAN <thead>) ---
-                    // Urutan: Kode | Foto | Nama | Jenis | H.Beli | H.Jual | Supplier | View
+                    // --- 5. Susun Array Data (URUTAN WAJIB SAMA DENGAN HEADER TABEL HTML) ---
+                    // Urutan: Kode | Foto | Nama | KATEGORI | Jenis | H.Beli | H.Jual | Supplier | View
                     var array_temp = [
-                        item.kode,                                  // Col 0: Kode
-                        imgHtml,                                    // Col 1: Foto (HTML Image)
-                        item.nama,                                  // Col 2: Nama
-                        item.jenis,                                 // Col 3: Jenis
-                        'Rp ' + parseInt(item.harga_beli).toLocaleString('id-ID'), // Col 4: H.Beli
-                        'Rp ' + harga_jual.toLocaleString('id-ID'),        // Col 5: H.Jual
-                        item.supplier,                              // Col 6: Supplier
-                        btnHtml                                     // Col 7: Tombol View
+                        item.kode,                                                  // Col 0: Kode
+                        imgHtml,                                                    // Col 1: Foto
+                        item.nama,                                                  // Col 2: Nama
+                        kategoriHtml,                                               // Col 3: KATEGORI (NEW)
+                        item.jenis,                                                 // Col 4: Jenis
+                        'Rp ' + parseInt(item.harga_beli).toLocaleString('id-ID'),  // Col 5: H.Beli
+                        'Rp ' + harga_jual.toLocaleString('id-ID'),                 // Col 6: H.Jual
+                        item.supplier,                                              // Col 7: Supplier
+                        btnHtml                                                     // Col 8: View
                     ];
 
-                    // Tambahkan ke DataTable
+                    // Tambahkan baris ke DataTable
                     dataTableObj.row.add(array_temp);
                 });
 
-                // Render tabel
+                // Render ulang tabel setelah semua data masuk
                 dataTableObj.draw();
                 
                 $('#loading-filter').hide();
