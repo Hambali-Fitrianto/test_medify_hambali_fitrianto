@@ -10,10 +10,16 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="mb-0 text-secondary">Master Items</h4>
                 <div>
-                    {{-- Tombol Shortcut ke Kategori (Opsional, memudahkan navigasi) --}}
+                    {{-- Tombol Shortcut ke Kategori --}}
                     <a href="{{ url('categories') }}" class="btn btn-outline-secondary me-2">
                         Kelola Kategori
                     </a>
+
+                    {{-- TOMBOL EXPORT EXCEL (BARU) --}}
+                    <a href="{{ url('master-items/export-excel') }}" class="btn btn-success me-2" target="_blank">
+                        📄 Export Excel
+                    </a>
+
                     {{-- Tombol Tambah Item Baru --}}
                     <a href="{{ url('master-items/form/new') }}" class="btn btn-primary">
                         + Item Baru

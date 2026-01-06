@@ -41,3 +41,5 @@ Route::get('/categories/view/{id}', [CategoryController::class, 'singleView']);
 Route::get('/categories/delete/{id}', [CategoryController::class, 'delete']);
 // Route Download PDF
 Route::get('categories/pdf/{id}', [CategoryController::class, 'generatePdf']);
+// Route Export Excel
+Route::get('master-items/export-excel', [MasterItemsController::class, 'exportExcel']);

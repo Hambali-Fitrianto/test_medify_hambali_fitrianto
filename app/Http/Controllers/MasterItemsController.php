@@ -6,6 +6,8 @@ use App\Models\MasterItem;
 use App\Models\Category; // Pastikan Model Category di-import
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File; 
+use App\Exports\MasterItemExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MasterItemsController extends Controller
 {
@@ -198,5 +200,10 @@ class MasterItemsController extends Controller
         $array = ['Obat','Alkes','Matkes','Umum','ATK'];
         $random = rand(0,4);
         return $array[$random];
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new MasterItemExport, 'laporan_master_items.xlsx');
     }
 }
